@@ -1,12 +1,12 @@
 import React from "react";
-import { usePrism } from "../hooks";
-import { getRustResult, RustResult } from "../utils";
-import { code } from "./code ";
+import { usePrism } from "../../hooks";
+import { getRustResult, RustResult } from "../../utils";
+import { code } from "./code";
 import RunLogo from "/run.svg";
 
 type IProps = {};
 
-const RustCode: React.FC<IProps> = () => {
+const Preview: React.FC<IProps> = () => {
   const [running, setRunning] = React.useState(false);
   const [result, setResult] = React.useState<RustResult | null>(null);
 
@@ -72,4 +72,4 @@ const RustCode: React.FC<IProps> = () => {
   );
 };
 
-export default RustCode;
+export default Preview;

@@ -1,5 +1,7 @@
 import "./App.css";
-import RustCode from "./components/RustCode";
+import CodeEditor from "./components/editor";
+import Preview from "./components/preview";
+import { code } from "./components/preview/code";
 import viteLogo from "/rust.svg";
 
 const App = () => {
@@ -11,7 +13,11 @@ const App = () => {
         </a>
       </div>
       <h1>Rust Playground</h1>
-      <RustCode />
+      <CodeEditor
+        defaultValue={code}
+        onChange={(value) => console.log(value)}
+      />
+      <Preview />
     </main>
   );
 };
