@@ -1,0 +1,113 @@
+#root {
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+}
+
+.main {
+  margin: 0 2rem;
+}
+
+.logo {
+  height: 6em;
+  padding: 0;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo.rust:hover {
+  filter: drop-shadow(0 0 2em coral);
+  animation: logo-spin 1s;
+}
+
+.logo.run {
+  height: 2em;
+  position: absolute;
+  right: 1rem;
+  opacity: 0;
+  cursor: pointer;
+}
+
+pre {
+  position: relative;
+  border-radius: 0.3rem;
+}
+
+pre:hover .run {
+  opacity: 50%;
+  transition: opacity 0.5s;
+  filter: drop-shadow(0 0 1em cyan);
+}
+
+.logo.run:hover {
+  opacity: 100%;
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+[contenteditable] {
+  outline: none; /* Remove the default outline */
+  border: 1px solid transparent; /* Optional: Add a transparent border to avoid layout shifts */
+}
+
+[contenteditable]:focus {
+  border: 1px solid transparent; /* Ensure no border appears on focus */
+}
+
+.stdmsg {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  font-size: 1.5rem;
+}
+
+.stderr::after {
+  content: "Std Error";
+}
+
+.stdout::after {
+  content: "Std Output";
+}
+
+.std-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.wood {
+  color: burlywood;
+}
+
+.gold {
+  color: gold;
+}
+
+.cyan {
+  color: cyan;
+}
+
+.greenyellow {
+  color: greenyellow;
+}
