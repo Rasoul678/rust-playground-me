@@ -1,0 +1,7 @@
+/* Editor container */
+.editor-container {
+  position: relative;
+  overflow: hidden;
+  background-color: #1e1e1e;
+  padding: 1rem;
+}

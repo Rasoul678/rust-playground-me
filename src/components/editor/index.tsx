@@ -1,9 +1,17 @@
 import { Editor, OnMount } from "@monaco-editor/react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import React from "react";
-import { useRegisterRustLanguage } from "../../hooks/useRegisterRustLanguage";
+import RunButton from "../run-button/RunButton";
+import "./Editor.css";
 import { formatWithRustfmt } from "./formatWithRustfmt";
-import { editorOptions } from "./setup";
+import {
+  colors,
+  configuration,
+  editorOptions,
+  languageDef,
+  rules,
+} from "./setup";
+import PrettierLogo from "/prettier.svg";
 
 type IProps = { defaultValue: string; onChange: (value: string) => void };
 type EditorType = monaco.editor.IStandaloneCodeEditor | null;
@@ -12,11 +20,35 @@ const CodeEditor: React.FC<IProps> = ({ defaultValue, onChange }) => {
   const editorRef = React.useRef<EditorType>(null);
 
   //! Register Rust language
-  useRegisterRustLanguage(editorRef);
+  // useRegisterRustLanguag e(editorRef);
 
   const handleEditorDidMount: OnMount = React.useCallback(
-    async (editor) => {
+    async (editor, monaco) => {
       editorRef.current = editor;
+
+      const rustLanguage = {
+        id: "rust",
+        extensions: [".rs"],
+        aliases: ["Rust", "rust"],
+        mimetypes: ["text/rust"],
+      };
+
+      // Register Rust language
+      monaco.languages.register(rustLanguage);
+      // Define Rust syntax highlighting (Monarch grammar)
+      monaco.languages.setMonarchTokensProvider("rust", languageDef);
+      // Define Rust language configuration
+      monaco.languages.setLanguageConfiguration("rust", configuration);
+
+      // Define custom theme
+      monaco.editor.defineTheme("rust-theme", {
+        base: "vs-dark",
+        inherit: true,
+        rules: rules,
+        colors: colors,
+      });
+
+      monaco.editor.setTheme("rust-theme");
 
       editor.onDidChangeModelContent(() => {
         //! propagate content changes to parent component
@@ -50,17 +82,17 @@ const CodeEditor: React.FC<IProps> = ({ defaultValue, onChange }) => {
 
   return (
     <>
-      <button onClick={handleFormatCode} style={{ marginTop: "10px" }}>
-        Format Code
-      </button>
-      <Editor
-        height="67vh"
-        theme="vs-dark"
-        defaultLanguage="rust"
-        defaultValue={defaultValue}
-        options={editorOptions}
-        onMount={handleEditorDidMount}
-      />
+      <div className="editor-container has-code-toolbar">
+        <RunButton onClick={handleFormatCode} logo={PrettierLogo} />
+        <Editor
+          height="67vh"
+          theme="rust-theme"
+          defaultLanguage="rust"
+          defaultValue={defaultValue}
+          options={editorOptions}
+          onMount={handleEditorDidMount}
+        />
+      </div>
     </>
   );
 };

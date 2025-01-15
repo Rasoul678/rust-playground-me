@@ -13,6 +13,7 @@
   padding: 0;
   will-change: filter;
   transition: filter 300ms;
+  z-index: 100;
 }
 .logo.rust:hover {
   filter: drop-shadow(0 0 2em coral);
@@ -22,18 +23,20 @@
 .logo.run {
   height: 2em;
   position: absolute;
-  right: 1rem;
+  right: 2.5rem;
+  top: 2rem;
   opacity: 0;
   cursor: pointer;
+  border-radius: 50%;
 }
 
-pre {
+.has-code-toolbar {
   position: relative;
   border-radius: 0.3rem;
 }
 
-pre:hover .run {
-  opacity: 50%;
+.has-code-toolbar:hover .run {
+  opacity: 60%;
   transition: opacity 0.5s;
   filter: drop-shadow(0 0 1em cyan);
 }

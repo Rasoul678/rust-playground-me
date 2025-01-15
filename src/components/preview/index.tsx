@@ -1,8 +1,8 @@
 import React from "react";
 import { usePrism } from "../../hooks";
 import { getRustResult, RustResult } from "../../utils";
+import RunButton from "../run-button/RunButton";
 import { code } from "./code";
-import RunLogo from "/run.svg";
 
 type IProps = {};
 
@@ -25,14 +25,8 @@ const Preview: React.FC<IProps> = () => {
 
   return (
     <div>
-      <pre className="line-numbers language-rust">
-        <img
-          onClick={execute}
-          src={RunLogo}
-          title="execute"
-          className="logo run"
-          alt="Run logo"
-        />
+      <pre className="line-numbers language-rust has-code-toolbar">
+        <RunButton onClick={execute} />
         <code className="language-rust">{code}</code>
       </pre>
       <hr className="stdmsg stdout" />
