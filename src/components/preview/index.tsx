@@ -3,6 +3,7 @@ import { usePrism } from "../../hooks";
 import { useCodeStore } from "../../store";
 import { getRustResult, RustResult } from "../../utils";
 import RunButton from "../run-button/RunButton";
+import { Card } from "../ui/card";
 
 type IProps = {};
 
@@ -25,44 +26,49 @@ const Preview: React.FC<IProps> = () => {
   }, []);
 
   return (
-    <div>
-      <pre className="line-numbers language-rust has-code-toolbar">
+    <div className="flex justify-between items-center gap-1">
+      <pre className="line-numbers language-rust has-code-toolbar w-[50%] h-[73vh]">
         <RunButton onClick={execute} />
         <code className="language-rust">{code}</code>
       </pre>
-      <hr className="stdmsg stdout" />
-      {running && <h3>Running...</h3>}
-      {!running && (
-        <div className="std-wrapper">
-          <p>
-            <span className="cyan">~/rust-playground</span>{" "}
-            <span className="gold">»</span>{" "}
-            <span className="greenyellow">cargo</span> run
-          </p>
-          {result?.output
-            ?.split("\n")
-            .filter(Boolean)
-            .map((out, idx) => {
+      <Card className="w-[50%] h-[73vh]">
+        {running && (
+          <div className="w-full h-full flex justify-center items-center">
+            <h2>Running...</h2>
+          </div>
+        )}
+        {!running && (
+          <div className="std-wrapper h-[67%] overflow-y-scroll p-2">
+            <p>
+              <span className="cyan">~/rust-playground</span>{" "}
+              <span className="gold">»</span>{" "}
+              <span className="greenyellow">cargo</span> run
+            </p>
+            {result?.output
+              ?.split("\n")
+              .filter(Boolean)
+              .map((out, idx) => {
+                return (
+                  <p key={idx + out}>
+                    <span className="gold">»</span> {out}
+                  </p>
+                );
+              })}
+          </div>
+        )}
+        {!running && (
+          <div className="std-wrapper overflow-y-scroll p-2">
+            <hr className="stdmsg stderr w-full" />
+            {result?.message?.split("\n").map((line, idx) => {
               return (
-                <p key={idx + out}>
-                  <span className="gold">»</span> {out}
+                <p className="wood" key={idx + line}>
+                  {line}
                 </p>
               );
             })}
-        </div>
-      )}
-      <hr className="stdmsg stderr" />
-      {!running && (
-        <div className="std-wrapper">
-          {result?.message?.split("\n").map((line, idx) => {
-            return (
-              <p className="wood" key={idx + line}>
-                {line}
-              </p>
-            );
-          })}
-        </div>
-      )}
+          </div>
+        )}
+      </Card>
     </div>
   );
 };

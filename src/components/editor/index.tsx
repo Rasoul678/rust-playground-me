@@ -55,7 +55,7 @@ const CodeEditor: React.FC<IProps> = () => {
       <div className="editor-container has-code-toolbar">
         <RunButton onClick={handleFormatCode} logo={PrettierLogo} />
         <Editor
-          height="67vh"
+          height="69vh"
           theme="rust-theme"
           defaultLanguage="rust"
           defaultValue={code}
