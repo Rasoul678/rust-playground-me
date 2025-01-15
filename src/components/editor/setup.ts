@@ -310,3 +310,29 @@ export const colors = {
   "editor.lineNumbers.foreground": "#858585", // Line numbers
   "editorGutter.background": "#1E1E1E", // Gutter background
 };
+
+export const setUpRust = (model: typeof monaco) => {
+  const rustLanguage = {
+    id: "rust",
+    extensions: [".rs"],
+    aliases: ["Rust", "rust"],
+    mimetypes: ["text/rust"],
+  };
+
+  // Register Rust language
+  model.languages.register(rustLanguage);
+  // Define Rust syntax highlighting (Monarch grammar)
+  model.languages.setMonarchTokensProvider("rust", languageDef);
+  // Define Rust language configuration
+  model.languages.setLanguageConfiguration("rust", configuration);
+
+  // Define custom theme
+  model.editor.defineTheme("rust-theme", {
+    base: "vs-dark",
+    inherit: true,
+    rules: rules,
+    colors: colors,
+  });
+
+  model.editor.setTheme("rust-theme");
+};

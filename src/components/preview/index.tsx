@@ -1,16 +1,17 @@
 import React from "react";
 import { usePrism } from "../../hooks";
+import { useCodeStore } from "../../store";
 import { getRustResult, RustResult } from "../../utils";
 import RunButton from "../run-button/RunButton";
-import { code } from "./code";
 
 type IProps = {};
 
 const Preview: React.FC<IProps> = () => {
+  const { code } = useCodeStore((state) => state);
   const [running, setRunning] = React.useState(false);
   const [result, setResult] = React.useState<RustResult | null>(null);
 
-  usePrism();
+  usePrism(code);
 
   const execute = async () => {
     setRunning(true);
@@ -20,7 +21,7 @@ const Preview: React.FC<IProps> = () => {
   };
 
   React.useEffect(() => {
-    execute();
+    // execute();
   }, []);
 
   return (
@@ -41,9 +42,9 @@ const Preview: React.FC<IProps> = () => {
           {result?.output
             ?.split("\n")
             .filter(Boolean)
-            .map((out) => {
+            .map((out, idx) => {
               return (
-                <p key={out}>
+                <p key={idx + out}>
                   <span className="gold">»</span> {out}
                 </p>
               );
@@ -53,9 +54,9 @@ const Preview: React.FC<IProps> = () => {
       <hr className="stdmsg stderr" />
       {!running && (
         <div className="std-wrapper">
-          {result?.message?.split("\n").map((line) => {
+          {result?.message?.split("\n").map((line, idx) => {
             return (
-              <p className="wood" key={line}>
+              <p className="wood" key={idx + line}>
                 {line}
               </p>
             );

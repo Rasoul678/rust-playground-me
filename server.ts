@@ -81,13 +81,10 @@ const server = Bun.serve({
           headers: { "Content-Type": "application/json" },
         });
       } catch (error) {
-        return new Response(
-          JSON.stringify({ error: "Failed to format code" }),
-          {
-            status: 500,
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+        return new Response(JSON.stringify({ error }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
       }
     }
 
