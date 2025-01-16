@@ -1,6 +1,11 @@
 import localforage from "localforage";
 import { create } from "zustand";
-import { createJSONStorage, persist, StateStorage } from "zustand/middleware";
+import {
+  createJSONStorage,
+  persist,
+  PersistOptions,
+  StateStorage,
+} from "zustand/middleware";
 import { INIT_CODE } from "../constant";
 
 localforage.config({
@@ -13,6 +18,7 @@ localforage.config({
 
 type State = {
   code: string;
+  isHydrated: boolean;
 };
 
 type Actions = {
@@ -37,15 +43,22 @@ const localForageStorage: StateStorage = {
 const storageOptions = {
   name: "rust-code",
   storage: createJSONStorage<Store>(() => localForageStorage),
+  onRehydrateStorage: () => (state: Store) => {
+    //! Set isHydrated to true once the state is rehydrated
+    if (state) {
+      state.isHydrated = true;
+    }
+  },
 };
 
 export const useCodeStore = create(
   persist<Store>(
     (set) => ({
       code: INIT_CODE,
+      isHydrated: false,
       setCode: (code) => set({ code }),
       reset: () => set({ code: INIT_CODE }),
     }),
-    storageOptions
+    storageOptions as PersistOptions<Store>
   )
 );

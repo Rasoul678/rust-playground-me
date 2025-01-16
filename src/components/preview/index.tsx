@@ -4,13 +4,14 @@ import React from "react";
 import { usePrism } from "../../hooks";
 import { useCodeStore } from "../../store";
 import { getRustResult, RustResult } from "../../utils";
+import PreviewRunSkeleton from "../preview-run-skeleton/PreviewRunSkeleton";
 import RunButton from "../run-button/RunButton";
 import { Card } from "../ui/card";
 
 type IProps = {};
 
 const Preview: React.FC<IProps> = () => {
-  const { code } = useCodeStore((state) => state);
+  const { code, isHydrated } = useCodeStore((state) => state);
   const [running, setRunning] = React.useState(false);
   const [result, setResult] = React.useState<RustResult | null>(null);
   const { toast } = useToast();
@@ -53,16 +54,22 @@ const Preview: React.FC<IProps> = () => {
   };
 
   React.useEffect(() => {
+    if (!isHydrated) return;
     execute();
-  }, []);
+  }, [code, isHydrated]);
+
+  // Show a loading state until the store is hydrated
+  if (!isHydrated) {
+    return <PreviewRunSkeleton />;
+  }
 
   return (
-    <div className="flex justify-between items-center gap-1">
-      <pre className="line-numbers language-rust has-code-toolbar w-[50%] h-[73vh]">
+    <div className="flex flex-col md:flex-row justify-between items-center gap-1">
+      <pre className="line-numbers language-rust has-code-toolbar w-full md:w-[50%] lg:w-[65%] h-[50vh] md:h-[73vh]">
         <RunButton onClick={execute} />
         <code className="language-rust">{code}</code>
       </pre>
-      <Card className="w-[50%] h-[73vh]">
+      <Card className="w-full md:w-[50%] lg:w-[35%] h-[30vh] md:h-[73vh] overflow-y-scroll md:overflow-auto">
         {running && (
           <div className="w-full h-full flex justify-center items-center">
             <h2>Running...</h2>
