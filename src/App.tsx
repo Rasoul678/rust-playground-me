@@ -1,8 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { lazy, Suspense } from "react";
 import "./App.css";
-import CodeEditor from "./components/editor";
 import Preview from "./components/preview";
+import { Skeleton } from "./components/ui/skeleton";
 import viteLogo from "/rust.svg";
+
+const CodeEditor = lazy(() => import("./components/editor"));
 
 const App = () => {
   return (
@@ -19,17 +22,19 @@ const App = () => {
       <Tabs defaultValue="preview" className="w-full">
         <TabsList className="w-[20rem] m-auto flex justify-around gap-4">
           <TabsTrigger value="preview" className="w-[50%]">
-            Preview
+            preview
           </TabsTrigger>
           <TabsTrigger value="editor" className="w-[50%]">
-            Editor
+            editor
           </TabsTrigger>
         </TabsList>
         <TabsContent value="preview">
           <Preview />
         </TabsContent>
         <TabsContent value="editor">
-          <CodeEditor />
+          <Suspense fallback={<Skeleton className="h-[69vh] w-full" />}>
+            <CodeEditor />
+          </Suspense>
         </TabsContent>
       </Tabs>
     </main>

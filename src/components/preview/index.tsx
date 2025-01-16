@@ -1,3 +1,5 @@
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/hooks/use-toast";
 import React from "react";
 import { usePrism } from "../../hooks";
 import { useCodeStore } from "../../store";
@@ -11,18 +13,47 @@ const Preview: React.FC<IProps> = () => {
   const { code } = useCodeStore((state) => state);
   const [running, setRunning] = React.useState(false);
   const [result, setResult] = React.useState<RustResult | null>(null);
+  const { toast } = useToast();
 
   usePrism(code);
 
   const execute = async () => {
-    setRunning(true);
-    const result = await getRustResult(code);
-    setResult(result);
-    setRunning(false);
+    try {
+      setRunning(true);
+      const result = await getRustResult(code);
+
+      if (!result.ok) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "Problem with executing your code.",
+          action: (
+            <ToastAction altText="Try again" onClick={execute}>
+              Try again
+            </ToastAction>
+          ),
+        });
+      }
+
+      setResult(result);
+    } catch (err) {
+      console.error(err);
+      toast({
+        variant: "destructive",
+        title: "Oh nooooo!",
+        action: (
+          <ToastAction altText="Try again" onClick={execute}>
+            Try again
+          </ToastAction>
+        ),
+      });
+    } finally {
+      setRunning(false);
+    }
   };
 
   React.useEffect(() => {
-    // execute();
+    execute();
   }, []);
 
   return (
@@ -42,7 +73,7 @@ const Preview: React.FC<IProps> = () => {
             <p>
               <span className="cyan">~/rust-playground</span>{" "}
               <span className="gold">»</span>{" "}
-              <span className="greenyellow">cargo</span> run
+              <span className="greenyellow">cargo</span> run main.rs
             </p>
             {result?.output
               ?.split("\n")
