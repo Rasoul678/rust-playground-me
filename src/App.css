@@ -68,39 +68,12 @@
   color: #888;
 }
 
-[contenteditable] {
-  outline: none; /* Remove the default outline */
-  border: 1px solid transparent; /* Optional: Add a transparent border to avoid layout shifts */
-}
-
-[contenteditable]:focus {
-  border: 1px solid transparent; /* Ensure no border appears on focus */
-}
-
-.stdmsg {
-  border: none;
-  border-bottom: 1px solid #ccc;
-  font-size: 1.5rem;
-}
-
-.stderr::after {
-  content: "Std Error";
-}
-
-.stdout::after {
-  content: "Std Output";
-}
-
 .std-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: flex-start;
   gap: 0;
-}
-
-.wood {
-  color: burlywood;
 }
 
 .gold {
@@ -113,4 +86,17 @@
 
 .greenyellow {
   color: greenyellow;
+}
+
+.loader {
+  @apply border-4 border-[#F3F3F3] border-t-[#3498db] rounded-full animate-spin w-10 h-10 m-auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

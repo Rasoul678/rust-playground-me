@@ -1,0 +1,56 @@
+.terminal {
+  background-color: black;
+  color: white;
+  font-family: Ubuntu, monospace;
+  padding: 0.5rem;
+  height: 67%;
+  overflow-y: auto;
+}
+
+.output {
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+.output div:nth-child(2n + 1) {
+  /* color: yellowgreen; */
+}
+
+.output div:nth-child(2n + 1)::before {
+  content: "~/rust-playground ";
+  color: cyan;
+}
+
+.output div:nth-child(2n) {
+  margin-bottom: 0.7rem;
+  padding-left: 0.5rem;
+}
+
+.input-line {
+  display: flex;
+}
+
+.input {
+  background-color: transparent;
+  border: none;
+  color: white;
+  outline: none;
+  flex-grow: 1;
+  font-family: Ubuntu, monospace;
+}
+
+.command {
+  color: var(--color);
+}
+
+.success {
+  color: #ffffff;
+}
+
+.error {
+  color: #ff4444;
+}
+
+.info {
+  color: orange;
+}

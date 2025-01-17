@@ -1,7 +1,7 @@
 export type RustResult = {
   output: string;
   message: string;
-  ok: string;
+  ok: boolean;
 };
 
 export const getRustResult = async (code: string): Promise<RustResult> => {

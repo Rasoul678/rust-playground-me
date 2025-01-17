@@ -14,7 +14,7 @@ This is a playground for YOU to learn Rust.
 
 ## Introduction
 
-This repository contains a collection of Rust examples to help you get started with Rust programming. Whether you're a beginner or an experienced Rust developer, this playground is designed to provide you with a hands-on experience to learn and experiment with Rust.
+This repository contains a Rust Playground UI to help you get started with Rust programming. Whether you're a beginner or an experienced Rust developer, this playground is designed to provide you with a hands-on experience to learn and experiment with Rust.
 
 ## Usage
 

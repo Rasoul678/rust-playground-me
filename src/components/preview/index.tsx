@@ -1,26 +1,42 @@
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
+import { TerminalIcon } from "lucide-react";
 import React from "react";
 import { usePrism } from "../../hooks";
 import { useCodeStore } from "../../store";
-import { getRustResult, RustResult } from "../../utils";
+import { getRustResult } from "../../utils";
 import PreviewRunSkeleton from "../preview-run-skeleton/PreviewRunSkeleton";
 import RunButton from "../run-button/RunButton";
-import { Card } from "../ui/card";
+import MyTerminal from "../terminal";
+import { Card, CardHeader } from "../ui/card";
 
 type IProps = {};
 
 const Preview: React.FC<IProps> = () => {
-  const { code, isHydrated } = useCodeStore((state) => state);
-  const [running, setRunning] = React.useState(false);
-  const [result, setResult] = React.useState<RustResult | null>(null);
+  const {
+    code,
+    isHydrated,
+    result,
+    setResult,
+    setOutputs,
+    outputs,
+    setIsRunning,
+  } = useCodeStore((state) => state);
   const { toast } = useToast();
 
   usePrism(code);
 
+  const startExecutaion = async (command: string = "cargo run") => {
+    setOutputs([
+      ...outputs,
+      { type: "command", text: `» ${command}`, command },
+    ]);
+    await execute();
+  };
+
   const execute = async () => {
     try {
-      setRunning(true);
+      setIsRunning(true);
       const result = await getRustResult(code);
 
       if (!result.ok) {
@@ -29,7 +45,7 @@ const Preview: React.FC<IProps> = () => {
           title: "Uh oh! Something went wrong.",
           description: "Problem with executing your code.",
           action: (
-            <ToastAction altText="Try again" onClick={execute}>
+            <ToastAction altText="Try again" onClick={() => startExecutaion()}>
               Try again
             </ToastAction>
           ),
@@ -43,20 +59,15 @@ const Preview: React.FC<IProps> = () => {
         variant: "destructive",
         title: "Oh nooooo!",
         action: (
-          <ToastAction altText="Try again" onClick={execute}>
+          <ToastAction altText="Try again" onClick={() => startExecutaion()}>
             Try again
           </ToastAction>
         ),
       });
     } finally {
-      setRunning(false);
+      setIsRunning(false);
     }
   };
-
-  React.useEffect(() => {
-    if (!isHydrated) return;
-    execute();
-  }, [code, isHydrated]);
 
   // Show a loading state until the store is hydrated
   if (!isHydrated) {
@@ -66,46 +77,27 @@ const Preview: React.FC<IProps> = () => {
   return (
     <div className="flex flex-col md:flex-row justify-between items-center gap-1">
       <pre className="line-numbers language-rust has-code-toolbar w-full md:w-[50%] lg:w-[65%] h-[50vh] md:h-[73vh]">
-        <RunButton onClick={execute} />
+        <RunButton onClick={() => startExecutaion()} />
         <code className="language-rust">{code}</code>
       </pre>
       <Card className="w-full md:w-[50%] lg:w-[35%] h-[30vh] md:h-[73vh] overflow-y-scroll md:overflow-auto">
-        {running && (
-          <div className="w-full h-full flex justify-center items-center">
-            <h2>Running...</h2>
-          </div>
-        )}
-        {!running && (
-          <div className="std-wrapper h-[67%] overflow-y-scroll p-2">
-            <p>
-              <span className="cyan">~/rust-playground</span>{" "}
-              <span className="gold">»</span>{" "}
-              <span className="greenyellow">cargo</span> run main.rs
-            </p>
-            {result?.output
-              ?.split("\n")
-              .filter(Boolean)
-              .map((out, idx) => {
-                return (
-                  <p key={idx + out}>
-                    <span className="gold">»</span> {out}
-                  </p>
-                );
-              })}
-          </div>
-        )}
-        {!running && (
-          <div className="std-wrapper overflow-y-scroll p-2">
-            <hr className="stdmsg stderr w-full" />
-            {result?.message?.split("\n").map((line, idx) => {
-              return (
-                <p className="wood" key={idx + line}>
-                  {line}
-                </p>
-              );
-            })}
-          </div>
-        )}
+        <CardHeader className="flex-row items-center gap-2 p-2">
+          <TerminalIcon />
+          <code className="text-[0.8rem]">
+            type <span className="italic text-orange-500 font-bold">help</span>{" "}
+            to see commands
+          </code>
+        </CardHeader>
+        <MyTerminal onCargoRun={(command) => startExecutaion(command)} />
+        <div className="std-wrapper overflow-y-scroll p-2">
+          {result?.message?.split("\n").map((line, idx) => {
+            return (
+              <p className="text-amber-300 text-[0.8rem]" key={idx + line}>
+                {line}
+              </p>
+            );
+          })}
+        </div>
       </Card>
     </div>
   );

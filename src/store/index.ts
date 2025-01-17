@@ -1,3 +1,5 @@
+import { OutputType } from "@/components/terminal";
+import { RustResult } from "@/utils";
 import localforage from "localforage";
 import { create } from "zustand";
 import {
@@ -13,16 +15,22 @@ localforage.config({
   version: 1.0,
   name: "playground",
   storeName: "editor",
-  description: "Code for Rust Playground",
+  description: "State of Rust Playground",
 });
 
 type State = {
   code: string;
   isHydrated: boolean;
+  result: RustResult | null;
+  outputs: OutputType[];
+  isRunning: boolean;
 };
 
 type Actions = {
   setCode: (c: string) => void;
+  setResult: (r: RustResult) => void;
+  setOutputs: (o: OutputType[]) => void;
+  setIsRunning: (flag: boolean) => void;
   reset: () => void;
 };
 
@@ -43,6 +51,11 @@ const localForageStorage: StateStorage = {
 const storageOptions = {
   name: "rust-code",
   storage: createJSONStorage<Store>(() => localForageStorage),
+  partialize: (state: State) => ({
+    code: state.code,
+    isHydrated: state.isHydrated,
+    result: state.result,
+  }),
   onRehydrateStorage: () => (state: Store) => {
     //! Set isHydrated to true once the state is rehydrated
     if (state) {
@@ -52,13 +65,29 @@ const storageOptions = {
 };
 
 export const useCodeStore = create(
-  persist<Store>(
-    (set) => ({
+  persist(
+    (set, get) => ({
       code: INIT_CODE,
-      isHydrated: false,
+      result: null,
+      outputs: [],
+      isHydrated: true,
+      isRunning: false,
+      setIsRunning: (flag) => set({ isRunning: flag }),
       setCode: (code) => set({ code }),
+      setResult: (result) => {
+        set({ result });
+        get().setOutputs([
+          ...get().outputs,
+          {
+            type: "success",
+            text: result.output,
+            command: "cargo run",
+          },
+        ]);
+      },
+      setOutputs: (outputs) => set({ outputs }),
       reset: () => set({ code: INIT_CODE }),
     }),
-    storageOptions as PersistOptions<Store>
+    storageOptions as PersistOptions<Store, Partial<Store>>
   )
 );
