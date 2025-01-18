@@ -3,8 +3,8 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import React from "react";
 import { useCodeStore } from "../../store";
 import RunButton from "../run-button/RunButton";
-import "./Editor.css";
-import { formatWithRustfmt } from "./formatWithRustfmt";
+import "./editor.css";
+import { formatRustCodeWasm } from "./formatWithRustfmt";
 import { editorOptions, setUpRust } from "./setup";
 import PrettierLogo from "/prettier.svg";
 
@@ -26,8 +26,9 @@ const CodeEditor: React.FC<IProps> = () => {
     editor.onDidChangeModelContent(() => {
       const unformated = editor.getValue();
       clearTimeout(timeout);
+
       timeout = setTimeout(async () => {
-        const formattedCode = await formatWithRustfmt(unformated);
+        const formattedCode = await formatRustCodeWasm(unformated);
         setCode(formattedCode);
       }, 500);
     });
@@ -42,7 +43,7 @@ const CodeEditor: React.FC<IProps> = () => {
     if (editorRef.current) {
       const unformated = editorRef.current.getValue();
       try {
-        const formattedCode = await formatWithRustfmt(unformated);
+        const formattedCode = await formatRustCodeWasm(unformated);
         editorRef.current.setValue(formattedCode);
       } catch (error) {
         console.error("Failed to format code:", error);
