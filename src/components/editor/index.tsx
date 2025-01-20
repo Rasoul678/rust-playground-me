@@ -16,6 +16,10 @@ const CodeEditor: React.FC<IProps> = () => {
   const { code, setCode } = useCodeStore((state) => state);
   let timeout: ReturnType<typeof setTimeout>;
 
+  React.useEffect(() => {
+    document.title = "Playground | Editor";
+  }, []);
+
   const handleEditorDidMount: OnMount = React.useCallback((editor, monaco) => {
     editorRef.current = editor;
 
@@ -60,7 +64,7 @@ const CodeEditor: React.FC<IProps> = () => {
           alt="format"
         />
         <Editor
-          height="69vh"
+          height="75vh"
           theme="rust-theme"
           defaultLanguage="rust"
           defaultValue={code}

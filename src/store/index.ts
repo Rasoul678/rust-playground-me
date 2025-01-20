@@ -1,4 +1,4 @@
-import { OutputType } from "@/components/terminal";
+import { CommandType, OutputType } from "@/components/terminal";
 import { RustResult } from "@/utils";
 import localforage from "localforage";
 import { create } from "zustand";
@@ -18,20 +18,24 @@ localforage.config({
   description: "State of Rust Playground",
 });
 
+export type CrateType = { id: string; name: string; version: string };
+
 type State = {
   code: string;
   isHydrated: boolean;
   result: RustResult | null;
   outputs: OutputType[];
   isRunning: boolean;
+  crates: CrateType[];
 };
 
 type Actions = {
-  setCode: (c: string) => void;
-  setResult: (r: RustResult) => void;
-  setOutputs: (o: OutputType[]) => void;
+  setCode: (code: string) => void;
+  setResult: (result: RustResult, type?: CommandType) => void;
+  setOutputs: (output: OutputType[]) => void;
   setIsRunning: (flag: boolean) => void;
-  reset: () => void;
+  setCrates: (crates: CrateType[]) => void;
+  reset: VoidFunction;
 };
 
 type Store = State & Actions;
@@ -55,6 +59,7 @@ const storageOptions = {
     code: state.code,
     isHydrated: state.isHydrated,
     result: state.result,
+    crates: state.crates,
   }),
   onRehydrateStorage: () => (state: Store) => {
     //! Set isHydrated to true once the state is rehydrated
@@ -70,17 +75,19 @@ export const useCodeStore = create(
       code: INIT_CODE,
       result: null,
       outputs: [],
+      crates: [],
       isHydrated: true,
       isRunning: false,
       setIsRunning: (flag) => set({ isRunning: flag }),
       setCode: (code) => set({ code }),
-      setResult: (result) => {
+      setCrates: (crates) => set({ crates }),
+      setResult: (result, type?: CommandType) => {
         set({ result });
         get().setOutputs([
           ...get().outputs,
           {
-            type: "success",
-            text: result.output,
+            type: type || CommandType.SUCCESS,
+            text: result.result,
             command: "cargo run",
           },
         ]);

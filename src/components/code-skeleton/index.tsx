@@ -10,7 +10,7 @@ const CodeSkeleton: React.FC<IProps> = ({ className, ...props }) => {
   return (
     <Skeleton
       className={cn(
-        "h-[50vh] md:h-[69vh] flex flex-col justify-evenly items-stretch px-4",
+        "h-[50vh] md:h-[85vh] flex flex-col justify-evenly items-stretch px-4",
         className
       )}
       {...props}

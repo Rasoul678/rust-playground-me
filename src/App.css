@@ -9,7 +9,6 @@
 }
 
 .logo {
-  height: 6em;
   padding: 0;
   will-change: filter;
   transition: filter 300ms;
@@ -21,13 +20,7 @@
 }
 
 .logo.run {
-  height: 2em;
-  position: absolute;
-  right: 1rem;
-  top: 1rem;
-  opacity: 0;
-  cursor: pointer;
-  border-radius: 50%;
+  @apply h-[2em] opacity-0 cursor-pointer rounded-[50%] sticky top-0 right-0 z-10 float-right;
 }
 
 .has-code-toolbar {
@@ -99,4 +92,24 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 0.4rem; /* Width of the scrollbar */
+  height: 0.4rem;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Color of the track */
+  border-radius: 0.3rem; /* Rounded corners */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #555; /* Color of the thumb */
+  border-radius: 0.5rem; /* Rounded corners */
+  border: 1px solid #1a1a1a; /* Padding around the thumb */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #888; /* Color of the thumb on hover */
 }

@@ -7,8 +7,15 @@ type IProps = {
   onCargoRun?: (command: string) => void;
 };
 
+export enum CommandType {
+  ERROR = "error",
+  SUCCESS = "success",
+  INFO = "info",
+  COMMAND = "command",
+}
+
 export type OutputType = {
-  type: "error" | "success" | "info" | "command";
+  type: CommandType;
   text: string;
   command: string;
 };
@@ -50,7 +57,11 @@ const MyTerminal: React.FC<IProps> = ({ onCargoRun }) => {
 
     let newOutputs: OutputType[] = [
       ...outputs,
-      { type: "command", text: command ? `» ${command}` : "", command },
+      {
+        type: CommandType.COMMAND,
+        text: command ? `» ${command}` : "",
+        command,
+      },
     ];
 
     switch (command.trim()) {
@@ -58,7 +69,7 @@ const MyTerminal: React.FC<IProps> = ({ onCargoRun }) => {
         newOutputs = [
           ...newOutputs,
           {
-            type: "info",
+            type: CommandType.INFO,
             text: "Available commands:\n\t- help: display available commands.\n\t- clear: clear screen.\n\t- cargo [cmd]: run rust code\n\t- echo [text]: show some text on screen",
             command,
           },
@@ -66,13 +77,13 @@ const MyTerminal: React.FC<IProps> = ({ onCargoRun }) => {
         break;
       case Commands.CLEAR:
         newOutputs = [];
-        setResult({ ok: false, message: "", output: "" });
+        setResult({ result: "", error: null });
         break;
       default:
         if (command.startsWith(Commands.ECHO)) {
           newOutputs = [
             ...newOutputs,
-            { type: "success", text: command.slice(5), command },
+            { type: CommandType.SUCCESS, text: command.slice(5), command },
           ];
         } else if (command.startsWith(Commands.CARGO)) {
           if (command === "cargo run") {
@@ -81,7 +92,7 @@ const MyTerminal: React.FC<IProps> = ({ onCargoRun }) => {
             newOutputs = [
               ...newOutputs,
               {
-                type: "info",
+                type: CommandType.INFO,
                 text: "Usage: cargo [cmd] \n\t- run [...] : build and run rust file.\n\t- format: apply formatter to code",
                 command,
               },
@@ -90,7 +101,11 @@ const MyTerminal: React.FC<IProps> = ({ onCargoRun }) => {
         } else {
           newOutputs = [
             ...newOutputs,
-            { type: "error", text: `Command not found: ${command}`, command },
+            {
+              type: CommandType.ERROR,
+              text: `Command not found: ${command}`,
+              command,
+            },
           ];
         }
         break;
@@ -100,7 +115,7 @@ const MyTerminal: React.FC<IProps> = ({ onCargoRun }) => {
 
   return (
     <div
-      className="terminal"
+      className="terminal custom-scrollbar"
       onClick={() => {
         if (inputRef.current) {
           inputRef.current.focus();

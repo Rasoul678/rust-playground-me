@@ -3,17 +3,13 @@
   color: white;
   font-family: Ubuntu, monospace;
   padding: 0.5rem;
-  height: 67%;
+  height: 60%;
   overflow-y: auto;
 }
 
 .output {
   white-space: pre-wrap;
   text-align: left;
-}
-
-.output div:nth-child(2n + 1) {
-  /* color: yellowgreen; */
 }
 
 .output div:nth-child(2n + 1)::before {
@@ -40,11 +36,11 @@
 }
 
 .command {
-  color: var(--color);
+  color: #ffffff;
 }
 
 .success {
-  color: #ffffff;
+  color: greenyellow;
 }
 
 .error {
