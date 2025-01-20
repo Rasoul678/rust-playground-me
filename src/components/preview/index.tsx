@@ -21,6 +21,9 @@ const Preview: React.FC<IProps> = () => {
     setOutputs,
     outputs,
     setIsRunning,
+    edition,
+    version,
+    mode,
   } = useCodeStore((state) => state);
   const { toast } = useToast();
 
@@ -41,9 +44,15 @@ const Preview: React.FC<IProps> = () => {
   const execute = async () => {
     // TODO: check for crates to be installed before running
 
+    const CompilerOptions = {
+      edition,
+      version,
+      mode,
+    };
+
     try {
       setIsRunning(true);
-      const data = await runRustCode(code);
+      const data = await runRustCode(code, CompilerOptions);
 
       if (data.error) {
         const message = "Problem with executing your code.";

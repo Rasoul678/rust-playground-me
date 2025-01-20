@@ -27,6 +27,9 @@ type State = {
   outputs: OutputType[];
   isRunning: boolean;
   crates: CrateType[];
+  edition: string;
+  version: string;
+  mode: string;
 };
 
 type Actions = {
@@ -35,6 +38,9 @@ type Actions = {
   setOutputs: (output: OutputType[]) => void;
   setIsRunning: (flag: boolean) => void;
   setCrates: (crates: CrateType[]) => void;
+  setEdition: (edition: string) => void;
+  setVersion: (version: string) => void;
+  setMode: (mode: string) => void;
   reset: VoidFunction;
 };
 
@@ -60,6 +66,9 @@ const storageOptions = {
     isHydrated: state.isHydrated,
     result: state.result,
     crates: state.crates,
+    edition: state.edition,
+    version: state.version,
+    mode: state.mode,
   }),
   onRehydrateStorage: () => (state: Store) => {
     //! Set isHydrated to true once the state is rehydrated
@@ -78,9 +87,15 @@ export const useCodeStore = create(
       crates: [],
       isHydrated: true,
       isRunning: false,
+      edition: "2021",
+      version: "stable",
+      mode: "debug",
       setIsRunning: (flag) => set({ isRunning: flag }),
       setCode: (code) => set({ code }),
       setCrates: (crates) => set({ crates }),
+      setEdition: (edition) => set({ edition }),
+      setVersion: (version) => set({ version }),
+      setMode: (mode) => set({ mode }),
       setResult: (result, type?: CommandType) => {
         set({ result });
         get().setOutputs([

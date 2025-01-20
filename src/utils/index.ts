@@ -5,14 +5,24 @@ export type RustResult = {
   error: string | null;
 };
 
-export const runRustCode = async (code: string): Promise<RustResult> => {
-  // TODO: add ability to run code on a specific options
+type CompilerOptions = {
+  edition: string;
+  version: string;
+  mode: string;
+};
+
+export const runRustCode = async (
+  code: string,
+  { edition, mode, version }: CompilerOptions
+): Promise<RustResult> => {
   const params = {
-    version: "stable",
-    mode: "debug",
+    version: version || "stable",
+    mode: mode || "debug",
     optimize: "0",
+    crateType: "bin",
+    tests: false,
     code,
-    edition: "2021",
+    edition: edition || "2021",
   };
 
   try {
